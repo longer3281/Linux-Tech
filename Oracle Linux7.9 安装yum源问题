@@ -1,0 +1,11 @@
+Oracle Linux7.9安装时，要求在线配置好yum安装源。可以按照如下步骤进行配置
+1）须要先把虚拟机网络配置完成，能够连上互联网
+
+O2）进入OracleLinux7.9 安装配置界面，输入yum源
+On the network 需要输入如下链接：
+https://
+yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64 【输入框填入这个链接即可】
+
+3）选择完需要安装的软件之后，需要等几分钟，才能开始安装
+
+4）点击 Begin Install 开始安装。
