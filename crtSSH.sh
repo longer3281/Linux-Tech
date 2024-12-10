@@ -30,8 +30,8 @@ echo "=创建各节点的ssh-keygen && 复制公钥到远程机器==="
 for hname in ${node_list[@]}
 do	
     echo "Create $hname ssh-keygen"
-    sshpass -p test1z ssh longer@$hname 'ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q'
-    sshpass -p test1z ssh-copy-id longer@$hname
+    sshpass -p yourpasswd ssh longer@$hname 'ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q'
+    sshpass -p yourpasswd ssh-copy-id longer@$hname
 done
 
 echo "====收集远程机器的公钥并存放到本地ssh认证文件中"
