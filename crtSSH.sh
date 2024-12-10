@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#Author: lilongqian
+#Date: 2024-12-08
 
 node_list=("$@")
 uname="`whoami`"
