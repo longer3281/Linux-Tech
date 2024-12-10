@@ -1,4 +1,6 @@
 #!/bin/bash
+#Author: lilongqian
+#Date: 2024-12-08
 
 echo "清理各节点ssh通道信息"
 
