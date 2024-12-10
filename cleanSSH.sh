@@ -13,7 +13,7 @@ do
        rm -rf ~/.ssh
        continue
    fi
-   sshpass -p test1z ssh -t -o StrictHostKeyChecking=no $hname 'rm -rf ~/.ssh'
+   sshpass -p yourpasswd ssh -t -o StrictHostKeyChecking=no $hname 'rm -rf ~/.ssh'
 done
 
 echo "删除本地ssh通道信息"
