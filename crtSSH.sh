@@ -3,8 +3,8 @@
 #Date: 2024-12-08
 
 node_list=("$@")
-uname="`whoami`"
-localhost="`hostname`"
+username="`whoami`"
+localhname="`hostname -s`"
 
 if [ ${#node_list[@]} -lt 1 ];
 then
@@ -15,23 +15,30 @@ fi
 
 echo "创建各节点之间的ssh通道"
 
-echo "uname==${uname}"
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
 touch ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts
 
-echo "=======收集ssh通道信息======="
-for hname in ${node_list[@]}
+echo "=======根据输入节点名称，在/etc/hosts中找到所有机器别名，再根据别名收集ssh通道信息======="
+for sshname in ${node_list[@]}
 do
-    echo "get $hname info"
-    ssh-keyscan ${hname} >> ~/.ssh/known_hosts 2>/dev/null
+    for linename in "$(cat /etc/hosts|grep $sshname|egrep -v '^$|127.0.0.1|::1|^\s*$')"
+    do
+        hnames=$(echo $linename|cut -d ' ' -f2-)
+        for hname in ${hnames[@]}
+        do
+    	    echo "get $hname info"
+    	    ssh-keyscan ${hname} >> ~/.ssh/known_hosts 2>/dev/null
+        done
+    done
+
 done
 
 echo "=创建各节点的ssh-keygen && 复制公钥到远程机器==="
 for hname in ${node_list[@]}
 do	
     echo "Create $hname ssh-keygen"
-    sshpass -p yourpasswd ssh longer@$hname 'ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q'
-    sshpass -p yourpasswd ssh-copy-id longer@$hname
+    sshpass -p yourpasswd ssh -o StrictHostKeyChecking=no -t ${username}@$hname 'ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q'
+    sshpass -p yourpasswd ssh-copy-id -f -o StrictHostKeyChecking=no ${username}@$hname
 done
 
 echo "====收集远程机器的公钥并存放到本地ssh认证文件中"
@@ -44,7 +51,7 @@ done
 echo "==复制authorized_keys与known_hosts到所有机器节点"
 for hname in ${node_list[@]}
 do	
-    if [ "$hname" == "$localhost" ]; then
+    if [ "$hname" == "$localhname" ]; then
 	continue
     fi
     echo "复制文件到$hname"
@@ -53,12 +60,4 @@ do
 done
 
 echo "==========ssh通道创建完成=========="
-
-
-
-#for hname in $@
-#do
-#   sshpass -p test1z ssh -o StrictHostKeyChecking=no $hname 'rm -rf ~/.ssh'
-#done
-
 
