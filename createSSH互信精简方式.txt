@@ -1,0 +1,24 @@
+sshpass -p oracle ssh-copy-id -o StrictHostKeyChecking=no rac19c01
+
+rac19c01, rac19c02
+ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q
+--------------------------------------
+
+hostlist="rac19c01 rac19c02"
+for hname in $hostlist
+do  
+  sshpass -p 'Oracle' ssh-copy-id -f -o StrictHostKeyChecking=no ${hname}
+  if [ "$hname" != "${hostlist%% *}" ]; then
+    ssh ${hname} cat ~/.ssh/id_*pub >> ~/.ssh/authorized_keys
+  fi
+  
+  echo "$hname" = "${hostlist##* }"
+  if [ "$hname" = "${hostlist##* }" ]; then
+      for hhname in "${hostlist#* }"
+      do
+         echo "scp ~/.ssh/{authorized_keys,known_hosts} $hhname:~/.ssh"
+         scp ~/.ssh/{authorized_keys,known_hosts} $hhname:~/.ssh
+      done  
+  fi
+  
+done
