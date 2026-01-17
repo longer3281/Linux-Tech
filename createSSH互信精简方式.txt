@@ -1,7 +1,9 @@
 sshpass -p oracle ssh-copy-id -o StrictHostKeyChecking=no rac19c01
 
+先在各节点上创建keygen
 rac19c01, rac19c02
 ssh-keygen -t rsa -P "" -f ~/.ssh/id_rsa -q
+然后执行如下代码
 --------------------------------------
 
 hostlist="rac19c01 rac19c02"
@@ -22,3 +24,4 @@ do
   fi
   
 done
+
